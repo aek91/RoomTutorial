@@ -14,13 +14,11 @@ public interface EmployeeDao {
     @Query("Select * From employee")
     List<Employee> getAll();
 
-
     @Query("Select * From employee WHERE id = :id")
     Employee getById(long id);
 
     @Query("SELECT * FROM employee ORDER BY salary DESC")
     List<Employee> getAllOrderBySalary();
-
 
     @Insert
     void insert(Employee employee);

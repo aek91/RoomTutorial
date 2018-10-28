@@ -19,7 +19,6 @@ public class MainRepository implements MainContract.Repository {
 
     @Override
     public List getDataFromModel() {
-        Log.d(TAG, "getDataFromModel()");
         /** Здесь обращаемся к БД
          * Я специально ничего не пишу, чтобы не загромождать пример
          * DBHelper'ами и прочими не относяшимеся к теме объектами.
@@ -27,7 +26,15 @@ public class MainRepository implements MainContract.Repository {
          */
         GetAllListTask mGetAllListTask = new GetAllListTask();
         mGetAllListTask.execute();
+        Log.d(TAG, "getDataFromModel()");
         return employeesList;
+    }
+
+    @Override
+    public void AddData(String name, int salary) {
+        AddTask mAddTask = new AddTask(name,salary);
+        mAddTask.execute();
+        Log.d(TAG, "AddData()");
     }
 
 
@@ -48,16 +55,39 @@ public class MainRepository implements MainContract.Repository {
                 String name = employee.getName();
                 int salary = employee.getSalary();
 
-                map = new HashMap<String, String>();
+                map = new HashMap<>();
                 map.put("Id", String.valueOf(id));
                 map.put("Name", name);
                 map.put("Salary", String.valueOf(salary));
-                //Log.i(TAG, String.valueOf(map));
                 employeesList.add(map);
             }
             return null;
         }
 
         }
+
+    class AddTask extends AsyncTask<Void, Void, Void> {
+        String name;
+        int salary;
+        List<Employee> employees;
+
+        private AddTask(String name, int salary) {
+            this.name = name;
+            this.salary = salary;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            employees = employeeDao.getAll(); //узнать длину массива для id
+            long id = employees.size();
+            Employee employee = new Employee(id, name, salary);
+            employeeDao.insert(employee);
+
+            return null;
+        }
+
     }
+    }
+
+
 

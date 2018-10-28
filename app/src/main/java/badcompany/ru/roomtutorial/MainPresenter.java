@@ -13,8 +13,6 @@ public class MainPresenter implements MainContract.Presenter {
     private MainContract.View mView;
     private MainContract.Repository mRepository;
     //Сообщение
-
-    private SimpleAdapter adapter;
     String[] from = { "Id", "Name", "Salary" };
     int[] to = { R.id.tv_item_id, R.id.tv_item_name, R.id.tv_item_salary };
 
@@ -29,26 +27,27 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void OnButtonGetWasCalled() {
+        SimpleAdapter adapter;
 
-        Log.d(TAG, "OnButtonGetWasCalled()");
-        List message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository)
-
-
-
+        List message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository) и получить ответ
         adapter = new SimpleAdapter((Context) mView, message, R.layout.list_item_row,
                 from, to);
         adapter.notifyDataSetChanged();
         mView.showResult(adapter); //отправить результат во View
+        Log.d(TAG, "OnButtonGetWasCalled()");
     }
-
-
 
     @Override
-    public void OnButtonAddWasCalled() {
+    public void onButtonAddWasCalled(Employee employee) {
+        String name = employee.getName();
+        int  salary = employee.getSalary();
 
-
+        mRepository.AddData(name,salary);
+        mView.showResultAdd();
         Log.d(TAG, "OnButtonAddWasCalled()");
     }
+
+
 
     @Override
     public void onDestroy() {
@@ -58,6 +57,7 @@ public class MainPresenter implements MainContract.Presenter {
          */
         Log.d(TAG, "onDestroy()");
     }
+
 
 
 

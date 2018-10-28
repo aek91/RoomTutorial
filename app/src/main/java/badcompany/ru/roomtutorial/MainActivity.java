@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener,MainContract.View {
@@ -21,11 +22,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     EditText et_name,et_salary;
     TextView tv;
     ListView lv;
-    /*
-    AddTask at;
-    GetTask gt;
-    GetAllTask gat;
-    */
+    String nameFromEditText;
+    int salaryFromEditText;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,10 +54,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.btn_add:
-                /*
-                at = new AddTask();
-                at.execute();
-                */
+                nameFromEditText = et_name.getText().toString();
+                salaryFromEditText = Integer.parseInt(et_salary.getText().toString());
+                int someId = 1;
+
+                Employee employee = new  Employee(someId,nameFromEditText,salaryFromEditText);
+                mPresenter.onButtonAddWasCalled(employee);
                 break;
             case R.id.btn_get:
                 mPresenter.OnButtonGetWasCalled();
@@ -73,8 +74,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void showResult(Object object) {
         //myTv.setText(message);
-        Log.d(TAG, "showMessage()");
+        Log.d(TAG, "showResult()");
         lv.setAdapter((ListAdapter) object);
+    }
+
+    @Override
+    public void showResultAdd() {
+        Log.d(TAG, "showResultAdd()");
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Запись добавлена", Toast.LENGTH_SHORT);
+        toast.show();
     }
 
     //Вызываем у Presenter метод onDestroy, чтобы избежать утечек контекста и прочих неприятностей.
@@ -85,29 +94,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Log.d(TAG, "onDestroy()");
     }
         /*
-    class AddTask extends AsyncTask<Void, Void, Void> {
 
-        List<Employee> employees;
-        @Override
-        protected Void doInBackground(Void... voids) {
-            employees = employeeDao.getAll();
-
-            long id = employees.size();
-            String name = et_name.getText().toString();
-            int salary = Integer.parseInt(et_salary.getText().toString());
-
-            Employee employee = new Employee(id, name, salary);
-            employeeDao.insert(employee);
-
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            Toast.makeText(getApplicationContext(), "Запись добавлена", Toast.LENGTH_SHORT).show();
-        }
-    }
 
     class GetAllTask extends AsyncTask<Void, Void, Void> {
 

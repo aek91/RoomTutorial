@@ -8,20 +8,14 @@ public class Employee {
 
     @PrimaryKey
     public long id;
+
     public  String name;
     public int salary;
-
-
 
     public Employee(long id, String name, int salary) {
         this.id = id;
         this.name = name;
         this.salary = salary;
-    }
-
-
-    public Employee() {
-
     }
 
 
