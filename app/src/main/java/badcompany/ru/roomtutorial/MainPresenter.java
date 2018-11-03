@@ -1,8 +1,7 @@
 package badcompany.ru.roomtutorial;
 
-import android.content.Context;
+import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.SimpleAdapter;
 
 import java.util.List;
 
@@ -13,41 +12,44 @@ public class MainPresenter implements MainContract.Presenter {
     private MainContract.View mView;
     private MainContract.Repository mRepository;
     //Сообщение
-    String[] from = { "Id", "Name", "Salary" };
-    int[] to = { R.id.tv_item_id, R.id.tv_item_name, R.id.tv_item_salary };
 
+    List message;
 
-    //Обратите внимание на аргументы конструктора - мы передаем экземпляр View
+    //внимание на аргументы конструктора - мы передаем экземпляр View
     public MainPresenter(MainContract.View mView) {
         this.mView = mView;
         this.mRepository = new MainRepository();
         Log.d(TAG, "Constructor");
     }
 
+    @Override
+    public void OnCreateApp() {
+        GetTask getTask = new GetTask();
+        getTask.execute();
+        Log.d(TAG, "OnCreateApp()");
+    }
 
     @Override
     public void OnButtonGetWasCalled() {
-        SimpleAdapter adapter;
-
-        List message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository) и получить ответ
-        adapter = new SimpleAdapter((Context) mView, message, R.layout.list_item_row,
-                from, to);
-        adapter.notifyDataSetChanged();
-        mView.showResult(adapter); //отправить результат во View
+        GetTask getTask = new GetTask();
+        getTask.execute();
         Log.d(TAG, "OnButtonGetWasCalled()");
     }
 
     @Override
     public void onButtonAddWasCalled(Employee employee) {
+        //Отправляем запрос на добавление
         String name = employee.getName();
         int  salary = employee.getSalary();
-
         mRepository.AddData(name,salary);
+
+        //Обновляем список
+        GetTask getTask = new GetTask();
+        getTask.execute();
+
         mView.showResultAdd();
         Log.d(TAG, "OnButtonAddWasCalled()");
     }
-
-
 
     @Override
     public void onDestroy() {
@@ -58,7 +60,28 @@ public class MainPresenter implements MainContract.Presenter {
         Log.d(TAG, "onDestroy()");
     }
 
+    class GetTask extends AsyncTask<Void, Void, Void> {
 
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mView.showProgressBar();
+        }
 
+        @Override
+        protected Void doInBackground(Void... voids) {
+            message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository) и получить ответ
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
+
+            mView.createAdapter(message);
+            mView.hideProgressBar();
+            //mView.showResult(adapter); //отправить результат во View
+        }
+    }
 
 }

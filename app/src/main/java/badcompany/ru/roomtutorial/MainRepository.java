@@ -12,17 +12,15 @@ public class MainRepository implements MainContract.Repository {
     private final String TAG = "MainRepository";
 
     //подключение к бд
-    AppDatabase db = App.getInstance().getDatabase();
-    EmployeeDao employeeDao = db.employeeDao();
+    private AppDatabase db = App.getInstance().getDatabase();
+    private EmployeeDao employeeDao = db.employeeDao();
 
     private List<HashMap<String, String>> employeesList = new ArrayList<>();
 
     @Override
     public List getDataFromModel() {
         /** Здесь обращаемся к БД
-         * Я специально ничего не пишу, чтобы не загромождать пример
-         * DBHelper'ами и прочими не относяшимеся к теме объектами.
-         * Поэтому я буду возвращать строку Сосисочная =)
+
          */
         GetAllListTask mGetAllListTask = new GetAllListTask();
         mGetAllListTask.execute();

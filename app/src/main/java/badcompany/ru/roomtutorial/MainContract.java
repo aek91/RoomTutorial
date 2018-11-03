@@ -7,12 +7,16 @@ public interface MainContract {
     interface View {
         void showResult(Object object);
         void showResultAdd();
+        void showProgressBar();
+        void hideProgressBar();
+        void createAdapter(List list);
     }
 
     interface Presenter {
+        void OnCreateApp();
         void OnButtonGetWasCalled();
-        void onDestroy();
         void onButtonAddWasCalled(Employee employee);
+        void onDestroy();
     }
 
     interface Repository {
