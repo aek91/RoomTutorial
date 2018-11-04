@@ -15,6 +15,30 @@ public class MainPresenter implements MainContract.Presenter {
 
     List message;
 
+    private static boolean isInteger(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
+
+    private static boolean isString(String s) {
+        try {
+            Integer.parseInt(s);
+        } catch(NumberFormatException e) {
+            return false;
+        } catch(NullPointerException e) {
+            return false;
+        }
+        // only got here if we didn't return false
+        return true;
+    }
+
     //внимание на аргументы конструктора - мы передаем экземпляр View
     public MainPresenter(MainContract.View mView) {
         this.mView = mView;
@@ -24,31 +48,31 @@ public class MainPresenter implements MainContract.Presenter {
 
     @Override
     public void OnCreateApp() {
-        GetTask getTask = new GetTask();
-        getTask.execute();
+        CreateTask createTask = new CreateTask();
+        createTask.execute();
         Log.d(TAG, "OnCreateApp()");
     }
 
-    @Override
-    public void OnButtonGetWasCalled() {
-        GetTask getTask = new GetTask();
-        getTask.execute();
-        Log.d(TAG, "OnButtonGetWasCalled()");
-    }
 
     @Override
     public void onButtonAddWasCalled(Employee employee) {
-        //Отправляем запрос на добавление
+
         String name = employee.getName();
-        int  salary = employee.getSalary();
-        mRepository.AddData(name,salary);
 
-        //Обновляем список
-        GetTask getTask = new GetTask();
-        getTask.execute();
+        String  salary = employee.getSalary();//проверка внесенных данных
+        boolean isInt = isInteger(String.valueOf(salary));
+        if (isInt) {
+            mRepository.AddData(name,salary);//Отправляем запрос на добавление
+            //Обновляем список
+            GetTask getTask = new GetTask();
+            getTask.execute();
 
-        mView.showResultAdd();
-        Log.d(TAG, "OnButtonAddWasCalled()");
+            mView.showResultAdd();
+            Log.d(TAG, "OnButtonAddWasCalled()");
+        } else {
+            mView.createNegativeToast();
+        }
+
     }
 
     @Override
@@ -60,27 +84,30 @@ public class MainPresenter implements MainContract.Presenter {
         Log.d(TAG, "onDestroy()");
     }
 
-    class GetTask extends AsyncTask<Void, Void, Void> {
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mView.showProgressBar();
-        }
-
+    class CreateTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... voids) {
             message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository) и получить ответ
             return null;
         }
-
         @Override
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
-
             mView.createAdapter(message);
+        }
+    }
+
+    class GetTask extends CreateTask {
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mView.showProgressBar();
+            message.clear();
+        }
+        @Override
+        protected void onPostExecute(Void result) {
+            super.onPostExecute(result);
             mView.hideProgressBar();
-            //mView.showResult(adapter); //отправить результат во View
         }
     }
 

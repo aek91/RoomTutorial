@@ -5,22 +5,21 @@ import java.util.List;
 public interface MainContract {
 
     interface View {
-        void showResult(Object object);
         void showResultAdd();
         void showProgressBar();
         void hideProgressBar();
         void createAdapter(List list);
+        void createNegativeToast();
     }
 
     interface Presenter {
         void OnCreateApp();
-        void OnButtonGetWasCalled();
         void onButtonAddWasCalled(Employee employee);
         void onDestroy();
     }
 
     interface Repository {
         List getDataFromModel();
-        void AddData(String name, int salary);
+        void AddData(String name, String salary);
     }
 }

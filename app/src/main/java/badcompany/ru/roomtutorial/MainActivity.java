@@ -18,14 +18,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private static final String TAG = "MainActivity";
     private MainContract.Presenter mPresenter;
-    Button btn_add,btn_get;
+    Button btn_add;
     EditText et_name,et_salary;
     ListView lv;
-    String nameFromEditText;
-    int salaryFromEditText;
+    String nameFromEditText,salaryFromEditText;
     SimpleAdapter adapter;
     ProgressBar mProgressBar;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,21 +32,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         //Создаём Presenter и в аргументе передаём ему this - эта Activity расширяет интерфейс MainContract.View
         mPresenter = new MainPresenter(this);
-        //Загрузка списка при создании экрана
-
-        Log.d(TAG, "OnCreateApp");
 
         mProgressBar = findViewById(R.id.progressBar);
         mProgressBar.setVisibility(ProgressBar.INVISIBLE);
         lv = findViewById(R.id.lv);
         btn_add = findViewById(R.id.btn_add);
         btn_add.setOnClickListener(this);
-        btn_get = findViewById(R.id.btn_get);
-        btn_get.setOnClickListener(this);
         et_name = findViewById(R.id.et_name);
         et_salary = findViewById(R.id.et_salary);
 
-        mPresenter.OnCreateApp();
+        mPresenter.OnCreateApp();//создать список
+        Log.d(TAG, "OnCreateApp");
     }
 
     @Override
@@ -56,25 +50,17 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         switch (view.getId()) {
             case R.id.btn_add:
                 nameFromEditText = et_name.getText().toString();
-                salaryFromEditText = Integer.parseInt(et_salary.getText().toString());
+                salaryFromEditText = et_salary.getText().toString();
                 int someId = 1;//заглушка
-
                 Employee employee = new  Employee(someId,nameFromEditText,salaryFromEditText);
                 mPresenter.onButtonAddWasCalled(employee);
                 break;
+                /*
             case R.id.btn_get:
                 mPresenter.OnButtonGetWasCalled();
                 break;
+                */
         }
-    }
-
-    @Override
-    public void showResult(Object object) {
-        //myTv.setText(message);
-        Log.d(TAG, "showResult()");
-        this.adapter = (SimpleAdapter) object;
-        adapter.notifyDataSetChanged();
-        lv.setAdapter(adapter);
     }
 
     @Override
@@ -84,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Toast toast = Toast.makeText(getApplicationContext(),
                 "Запись добавлена", Toast.LENGTH_SHORT);
         adapter.notifyDataSetChanged();
-        lv.setAdapter(adapter);
+        //lv.setAdapter(adapter);
         toast.show();
     }
 
@@ -109,6 +95,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         lv.setAdapter(adapter);
     }
 
+    @Override
+    public void createNegativeToast() {
+        Toast toast = Toast.makeText(getApplicationContext(),
+                "Указанный Salary не число", Toast.LENGTH_SHORT);
+        toast.show();
+    }
+
     //Вызываем у Presenter метод onDestroy, чтобы избежать утечек контекста и прочих неприятностей.
     @Override
     public void onDestroy() {
@@ -116,7 +109,4 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         mPresenter.onDestroy();
         Log.d(TAG, "onDestroy()");
     }
-
-
-
 }

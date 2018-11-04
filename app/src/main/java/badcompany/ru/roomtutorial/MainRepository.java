@@ -29,7 +29,7 @@ public class MainRepository implements MainContract.Repository {
     }
 
     @Override
-    public void AddData(String name, int salary) {
+    public void AddData(String name, String salary) {
         AddTask mAddTask = new AddTask(name,salary);
         mAddTask.execute();
         Log.d(TAG, "AddData()");
@@ -51,7 +51,7 @@ public class MainRepository implements MainContract.Repository {
                 employee = employeeDao.getById(i);
                 long id = employee.getId();
                 String name = employee.getName();
-                int salary = employee.getSalary();
+                String salary = employee.getSalary();
 
                 map = new HashMap<>();
                 map.put("Id", String.valueOf(id));
@@ -66,10 +66,10 @@ public class MainRepository implements MainContract.Repository {
 
     class AddTask extends AsyncTask<Void, Void, Void> {
         String name;
-        int salary;
+        String salary;
         List<Employee> employees;
 
-        private AddTask(String name, int salary) {
+        private AddTask(String name, String salary) {
             this.name = name;
             this.salary = salary;
         }

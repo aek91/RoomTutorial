@@ -10,15 +10,13 @@ public class Employee {
     public long id;
 
     public  String name;
-    public int salary;
+    public String salary;
 
-    public Employee(long id, String name, int salary) {
+    public Employee(long id, String name, String salary) {
         this.id = id;
         this.name = name;
         this.salary = salary;
     }
-
-
 
     @Override
     public String toString() {
@@ -41,11 +39,11 @@ public class Employee {
         this.name = name;
     }
 
-    public int getSalary() {
+    public String getSalary() {
         return salary;
     }
 
-    public void setSalary(int salary) {
+    public void setSalary(String salary) {
         this.salary = salary;
     }
 }
