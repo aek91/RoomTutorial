@@ -18,9 +18,7 @@ public class MainPresenter implements MainContract.Presenter {
     private static boolean isInteger(String s) {
         try {
             Integer.parseInt(s);
-        } catch(NumberFormatException e) {
-            return false;
-        } catch(NullPointerException e) {
+        } catch(NumberFormatException | NullPointerException e) {
             return false;
         }
         // only got here if we didn't return false
@@ -30,9 +28,7 @@ public class MainPresenter implements MainContract.Presenter {
     private static boolean isString(String s) {
         try {
             Integer.parseInt(s);
-        } catch(NumberFormatException e) {
-            return false;
-        } catch(NullPointerException e) {
+        } catch(NumberFormatException | NullPointerException e) {
             return false;
         }
         // only got here if we didn't return false
@@ -58,19 +54,21 @@ public class MainPresenter implements MainContract.Presenter {
     public void onButtonAddWasCalled(Employee employee) {
 
         String name = employee.getName();
-
-        String  salary = employee.getSalary();//проверка внесенных данных
+        String  salary = employee.getSalary();
+        //проверка внесенных данных
         boolean isInt = isInteger(String.valueOf(salary));
+        if (name.equals("")) {
+            mView.createNegativeToast("Не найдено Name");
+        }
         if (isInt) {
             mRepository.AddData(name,salary);//Отправляем запрос на добавление
             //Обновляем список
             GetTask getTask = new GetTask();
             getTask.execute();
-
             mView.showResultAdd();
             Log.d(TAG, "OnButtonAddWasCalled()");
         } else {
-            mView.createNegativeToast();
+            mView.createNegativeToast("Не найдено Salary");
         }
 
     }
@@ -85,6 +83,12 @@ public class MainPresenter implements MainContract.Presenter {
     }
 
     class CreateTask extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            mView.showProgressBar();
+        }
         @Override
         protected Void doInBackground(Void... voids) {
             message = mRepository.getDataFromModel(); //отправить запрос в Model(Repository) и получить ответ
@@ -94,6 +98,7 @@ public class MainPresenter implements MainContract.Presenter {
         protected void onPostExecute(Void result) {
             super.onPostExecute(result);
             mView.createAdapter(message);
+            mView.hideProgressBar();
         }
     }
 
@@ -101,13 +106,7 @@ public class MainPresenter implements MainContract.Presenter {
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            mView.showProgressBar();
             message.clear();
-        }
-        @Override
-        protected void onPostExecute(Void result) {
-            super.onPostExecute(result);
-            mView.hideProgressBar();
         }
     }
 

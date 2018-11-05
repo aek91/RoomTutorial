@@ -9,7 +9,7 @@ public interface MainContract {
         void showProgressBar();
         void hideProgressBar();
         void createAdapter(List list);
-        void createNegativeToast();
+        void createNegativeToast(String string);
     }
 
     interface Presenter {

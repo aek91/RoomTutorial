@@ -20,7 +20,6 @@ public class MainRepository implements MainContract.Repository {
     @Override
     public List getDataFromModel() {
         /** Здесь обращаемся к БД
-
          */
         GetAllListTask mGetAllListTask = new GetAllListTask();
         mGetAllListTask.execute();

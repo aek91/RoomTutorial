@@ -96,9 +96,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     @Override
-    public void createNegativeToast() {
+    public void createNegativeToast(String text) {
         Toast toast = Toast.makeText(getApplicationContext(),
-                "Указанный Salary не число", Toast.LENGTH_SHORT);
+                text, Toast.LENGTH_SHORT);
         toast.show();
     }
 

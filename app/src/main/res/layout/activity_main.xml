@@ -16,9 +16,11 @@
         android:id="@+id/et_name"
         android:layout_width="381dp"
         android:layout_height="wrap_content"
+        android:contentDescription="   "
         android:ems="10"
         android:hint="Name"
-        android:inputType="textPersonName"
+        android:inputType="textCapWords"
+        android:textAllCaps="false"
         tools:text="@tools:sample/first_names" />
 
     <EditText
